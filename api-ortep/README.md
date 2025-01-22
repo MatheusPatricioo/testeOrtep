@@ -1,66 +1,171 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Fullstack Challenge - Dictionary API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar palavras do dicionário, adicionar palavras aos favoritos e manter um histórico das palavras visualizadas. O projeto utiliza caching com Redis para melhorar a performance das requisições.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tecnologias Utilizadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel**: Framework PHP para desenvolvimento da API.
+- **Redis**: Sistema de armazenamento em cache.
+- **JWT (JSON Web Tokens)**: Para autenticação de usuários.
+- **MySQL**: Banco de dados relacional.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📂 Estrutura do Projeto
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+/api-ortep
+├── app
+│ ├── Console
+│ │ └── Commands
+│ │ └── ImportWords.php
+│ ├── Http
+│ │ ├── Controllers
+│ │ │ ├── AuthController.php
+│ │ │ ├── EntryController.php
+│ │ │ └── UserController.php
+│ ├── Models
+│ │ ├── Favorite.php
+│ │ ├── History.php
+│ │ └── User.php
+├── config
+│ ├── auth.php
+│ ├── cache.php
+├── database
+│ ├── migrations
+│ │ ├── 0001_01_01_000000_create_users_table.php
+│ │ ├── 2025_01_22_055258_create_favorites_table.php
+│ │ └── 2025_01_22_073059_create_histories_table.php
+├── routes
+│ └── api.php
+├── .env
+└── words_dictionary.json
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ⚙️ Configuração do Ambiente
 
-### Premium Partners
+### 1. Instalação do Laravel Sail (Docker)
+Para iniciar o projeto, você deve ter o Docker instalado. Utilize o Laravel Sail para configurar o ambiente:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+./vendor/bin/sail up -d
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Configuração do Banco de Dados e Cache (Redis)
+Certifique-se de que as variáveis no arquivo `.env` estão configuradas corretamente:
 
-## Code of Conduct
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+CACHE_DRIVER=redis
+REDIS_HOST=redis
+REDIS_PORT=6379
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+### 3. Executar Migrations
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+php artisan migrate
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Importar Palavras do Dicionário 
+Um comando Artisan foi criado para importar palavras do arquivo `words_dictionary.json`:
+
+php artisan import:words
+
+
+---
+
+## 🚀 Endpoints da API
+
+### 1. Rota Inicial: `[GET] /`
+Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
+
+**Exemplo de Resposta:**
+    {
+    "message": "Fullstack Challenge 🏅 - Dictionary"
+    }
+
+
+### 2. Autenticação:
+- **[POST] /auth/signup**  
+  Registra um novo usuário.
+
+  **Exemplo de Requisição:**
+    {
+    "name": "User Test",
+    "email": "test@example.com",
+    "password": "password123"
+    }
+    
+**Exemplo de Resposta:**
+    {
+    "id": 1,
+    "name": "User Test",
+    "token": "Bearer <seu_token_jwt>"
+    }
+
+
+- **[POST] /auth/signin**  
+Autentica um usuário e retorna um token JWT.
+
+**Exemplo de Requisição:**
+{
+"email": "test@example.com",
+"password": "password123"
+}
+
+
+**Exemplo de Resposta:**
+{
+"id": 1,
+"name": "User Test",
+"token": "Bearer <seu_token_jwt>"
+}
+
+
+### 3. Dicionário:
+- **[GET] /entries/en**
+- Lista palavras com busca e paginação.
+
+- **[GET] /entries/en/:word**
+- Retorna detalhes da palavra especificada e registra no histórico.
+
+### 4. Favoritos:
+- **[POST] /entries/en/:word/favorite**
+- Adiciona uma palavra aos favoritos.
+
+- **[DELETE] /entries/en/:word/unfavorite**
+- Remove uma palavra dos favoritos.
+
+### 5. Usuário:
+- **[GET] /user/me**
+- Retorna o perfil do usuário autenticado.
+
+- **[GET] /user/me/history**
+- Retorna o histórico de palavras visualizadas pelo usuário.
+
+- **[GET] /user/me/favorites**
+- Retorna as palavras favoritas do usuário.
+
+---
+
+## 📖 Processos de Investigação
+
+Durante o desenvolvimento deste projeto, várias decisões foram tomadas:
+
+1. **Escolha do Redis**: Optou-se por usar o Redis devido à sua eficiência em caching, melhorando a performance das requisições repetidas.
+2. **Estrutura das Rotas**: As rotas foram estruturadas com base nos requisitos fornecidos, garantindo que cada funcionalidade fosse acessível através de endpoints RESTful.
+3. **Implementação do Cache**: O cache foi implementado nas rotas que realizam buscas frequentes, utilizando os headers `x-cache` e `x-response-time` para monitorar a eficácia do cache.
+4. **Apelido para o Redis**: O Redis foi apelidado como um sistema leve e rápido, ideal para armazenar dados temporários e otimizar a performance da aplicação.
+
+---
+
+## 📋 Conclusão
+
+Este projeto atende aos requisitos solicitados no desafio, implementando uma API funcional com autenticação, gerenciamento de favoritos e histórico, além de otimizações através do uso de cache com Redis.

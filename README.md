@@ -42,7 +42,7 @@ Nessa etapa você deverá construir uma API Restful com as melhores práticas de
 - Como usuário, deve ser capaz de apagar uma palavra favorita
 - Internamente, a API deve fazer proxy da Words API, pois assim o front irá acessar somente a sua API
 
-**Obrigatório 2** - Você deverá desenvolver as seguintes rotas com suas requisições e respostas:
+**Obrigatório 2** - Você deverá desenvolver as seguintes rotas com suas requisições e respostas: OK
 
 <details open>
 <summary>[GET] /</summary>
@@ -222,13 +222,13 @@ Além disso, os endpoints devem utilizar os seguintes códigos de status:
 }
 ```
 
-**Obrigatório 3** - Você deve criar um script para baixar a lista de palavras do repositório e importar estas palavras para o banco de dados. A API não possui endpoint com a lista de palavras. Para criar seu endpoint será necessário alimentar o seu banco de dados com o [arquivo existente dentro do projeto no Github](https://github.com/dwyl/english-words/blob/master/words_dictionary.json).
+**Obrigatório 3** - Você deve criar um script para baixar a lista de palavras do repositório e importar estas palavras para o banco de dados. A API não possui endpoint com a lista de palavras. Para criar seu endpoint será necessário alimentar o seu banco de dados com o [arquivo existente dentro do projeto no Github](https://github.com/dwyl/english-words/blob/master/words_dictionary.json). ok
 
-**Obrigatório 4** - Salvar em cache o resultado das requisições a API, para agilizar a resposta em caso de buscas com parâmetros repetidos. Sugestões são usar o Redis e/ou MongoDB;
+**Obrigatório 4** - Salvar em cache o resultado das requisições a API, para agilizar a resposta em caso de buscas com parâmetros repetidos. Sugestões são usar o Redis e/ou MongoDB; ok
 
 O cache pode ser feito a guardar todo o corpo das respostas ou para guardar o resultado das queries do banco. Para identificar a presença de cache, será necessário adicionar os seguintes headers nas respostas:
 - x-cache: valores HIT (retornou dados em cache) ou MISS (precisou buscar no banco)
-- x-response-time: duração da requisição em milissegundos
+- x-response-time: duração da requisição em milissegundos 
 
 **Diferencial 1** - Descrever a documentação da API utilizando o conceito de Open API 3.0;
 
