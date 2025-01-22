@@ -10,34 +10,47 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     public function signup(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:6',
+    ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+    $user = User::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+    ]);
 
-        return response()->json(['message' => 'User created successfully'], 201);
+    // Gerar token JWT para o usuário
+    $token = JWTAuth::fromUser($user);
+
+    return response()->json([
+        'id' => $user->id,
+        'name' => $user->name,
+        'token' => "Bearer {$token}",
+    ], 201);
+}
+
+public function signin(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string',
+    ]);
+
+    if (!$token = JWTAuth::attempt($credentials)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
-    public function signin(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+    $user = auth()->user();
 
-        // Usar JWTAuth para autenticação
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
+    return response()->json([
+        'id' => $user->id,
+        'name' => $user->name,
+        'token' => "Bearer {$token}",
+    ]);
+}
 
-        return response()->json(['token' => $token]);
-    }
 }
