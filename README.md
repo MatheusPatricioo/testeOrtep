@@ -32,7 +32,7 @@ Conforme indicado na documentação da API, a API retorna as informações de um
 
 Nessa etapa você deverá construir uma API Restful com as melhores práticas de desenvolvimento.
 
-**Obrigatório 1** - Você deverá atender aos seguintes casos de uso:
+**Obrigatório 1** - Você deverá atender aos seguintes casos de uso: OK
 
 - Como usuário, devo ser capaz de realizar login com usuário e senha
 - Como usuário, devo ser capaz de visualizar a lista de palavras do dicionário
