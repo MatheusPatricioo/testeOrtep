@@ -26,31 +26,25 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the identifier that will be stored in the JWT subject claim.
-     *
-     * @return mixed
-     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    /**
-     * Return a key-value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims(): array
     {
         return [];
     }
 
-    /**
-     * Relationship: User's word history.
-     */
+    // Relacionamento com histórico de palavras
     public function history()
     {
-        return $this->hasMany(History::class); // Relacionamento com o modelo History
+        return $this->hasMany(History::class);
+    }
+
+    // Relacionamento com palavras favoritas
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }
