@@ -1,280 +1,284 @@
-# Back-end Challenge - Dictionary
+# Fullstack Challenge - Dictionary API
 
-## Introdução
+Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar palavras do dicionário e gerenciar suas favoritas.
 
-Este é um teste para que possamos ver as suas habilidades como Back-end Developer.
+---
 
-Nesse teste você deverá desenvolver um aplicativo para listar palavras em inglês, utilizando como base a API [Free Dictionary API](https://dictionaryapi.dev/). O projeto a ser desenvolvido por você tem como objetivo exibir termos em inglês e gerenciar as palavras visualizadas, conforme indicado nos casos de uso que estão logo abaixo.
+## 🚀 Processo de Desenvolvimento
 
-[SPOILER] As instruções de entrega e apresentação do challenge estão no final deste Readme (=
+Como desenvolvedor júnior, segui uma abordagem estruturada para construir este projeto. Aqui está o passo a passo do desenvolvimento:
 
-### Antes de começar
- 
-- O projeto deve utilizar a Linguagem específica na avaliação. Por exempo: Python, R, Scala e entre outras;
-- Considere como deadline da avaliação a partir do início do teste. Caso tenha sido convidado a realizar o teste e não seja possível concluir dentro deste período, avise a pessoa que o convidou para receber instruções sobre o que fazer.
-- Documentar todo o processo de investigação para o desenvolvimento da atividade (README.md no seu repositório); os resultados destas tarefas são tão importantes do que o seu processo de pensamento e decisões à medida que as completa, por isso tente documentar e apresentar os seus hipóteses e decisões na medida do possível.
+### 1. Configuração Inicial
+Primeiro, configurei o ambiente base:
+- Instalei o Laravel 11 usando Composer
+- Configurei o Laravel Sail (Docker) para garantir um ambiente consistente
+- Defini as variáveis de ambiente no arquivo `.env`
 
-#### Tecnologias (Back-End):
-- API (Node.js, PHP, Ruby, etc) com ou sem uso de frameworks
-- Banco de dados (Postgres, MySQL, MongoDB, etc).
+### 2. Banco de Dados
+Comecei pelo banco de dados pois é a fundação do projeto:
+- Criei as migrations para estruturar o banco:
+  - `users`: Para armazenar dados dos usuários
+  - `favorites`: Para guardar as palavras favoritas
+  - `histories`: Para registrar palavras visualizadas
+- Executei as migrations para criar as tabelas
 
-Como sugestões, pode criar um banco de dados grátis **MongoDB** usando Atlas: https://www.mongodb.com/cloud/atlas ou banco de dados grátis **MySQL** no Heroku: https://elements.heroku.com/addons/jawsdb ou banco de dados grátis **Postgres** no Heroku: https://elements.heroku.com/addons/heroku-postgresql; (Recomendável usar Drivers oficiais para integração com o DB)
+### 3. Autenticação
+Implementei a autenticação pois é necessária para outras funcionalidades:
+- Configurei o JWT para tokens de autenticação
+- Criei o AuthController para registro e login
+- Implementei as rotas de autenticação
 
-#### Organização:
-- Aplicação de padrões Clean Code
-- Validação de chamadas assíncronas para evitar travamentos
+### 4. Importação do Dicionário
+Desenvolvi o sistema de importação de palavras:
+- Criei um comando Artisan personalizado (`ImportWords`)
+- Processei o arquivo `words_dictionary.json`
+- Importei as palavras para o banco de dados
 
-### Modelo de Dados:
+### 5. Cache com Redis
+Implementei o sistema de cache para otimizar a performance:
+- Configurei o Redis como driver de cache
+- Adicionei cache nas consultas frequentes
+- Implementei os headers obrigatórios (x-cache e x-response-time)
 
-Conforme indicado na documentação da API, a API retorna as informações de uma palavra, tais como etimologia, sinônimos, exemplos de uso, etc. Utilize os campos indicados na documentação dos endpoints para obter os dados necessários.
+### 6. Controllers e Rotas
+Desenvolvi os controllers principais:
+- `EntryController`: Para gerenciar palavras do dicionário
+- `UserController`: Para perfil e histórico do usuário
+- `FavoriteController`: Para gerenciar favoritos
 
-### Back-End:
+### 7. Testes e Validação
+Por fim, realizei testes para garantir a qualidade:
+- Testei todas as rotas no Insomnia
+- Verifiquei o funcionamento do cache
+- Validei a autenticação e autorização
 
-Nessa etapa você deverá construir uma API Restful com as melhores práticas de desenvolvimento.
+### Por que esta ordem?
 
-**Obrigatório 1** - Você deverá atender aos seguintes casos de uso: OK
+1. **Banco Primeiro**: Começar pelo banco de dados permite entender melhor a estrutura dos dados e relacionamentos
+2. **Autenticação**: É fundamental ter autenticação funcionando antes de implementar funcionalidades protegidas
+3. **Cache Depois**: Implementei cache após ter as funcionalidades básicas funcionando, para otimizar o que já estava pronto
+4. **Testes por Último**: Testar com tudo implementado permite uma validação mais completa
 
-- Como usuário, devo ser capaz de realizar login com usuário e senha
-- Como usuário, devo ser capaz de visualizar a lista de palavras do dicionário
-- Como usuário, devo ser capaz de guardar no histórico palavras já visualizadas
-- Como usuário, devo ser capaz de visualizar o histórico de palavras já visualizadas
-- Como usuário, deve ser capaz de guardar uma palavra como favorita
-- Como usuário, deve ser capaz de apagar uma palavra favorita
-- Internamente, a API deve fazer proxy da Words API, pois assim o front irá acessar somente a sua API
+### Desafios Encontrados
 
-**Obrigatório 2** - Você deverá desenvolver as seguintes rotas com suas requisições e respostas: OK
+- Configuração inicial do Docker/Sail( tive pouco contato com o Docker)
+- Implementação do sistema de cache com Redis (não conhecia o Redis)
+- Importação eficiente do dicionário
+- Gestão de tokens JWT
 
-<details open>
-<summary>[GET] /</summary>
-<p>
-Retornar a mensagem "Fullstack Challenge 🏅 - Dictionary"
-</p>
+### Aprendizados
 
-```json
-{
+- Importância de um bom planejamento inicial
+- Benefícios de usar containers Docker
+- Como implementar cache eficientemente
+- Boas práticas de autenticação com JWT
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Laravel**: Framework PHP para desenvolvimento da API
+- **Redis**: Sistema de armazenamento em cache
+- **JWT (JSON Web Tokens)**: Para autenticação de usuários
+- **MySQL**: Banco de dados relacional
+
+---
+## 📂 Estrutura do Projeto
+/api-ortep
+├── app
+│ ├── Console
+│ │ └── Commands
+│ │ └── ImportWords.php
+│ ├── Http
+│ │ ├── Controllers
+│ │ │ ├── AuthController.php
+│ │ │ ├── EntryController.php
+│ │ │ └── UserController.php
+│ ├── Models
+│ │ ├── Favorite.php
+│ │ ├── History.php
+│ │ └── User.php
+├── config
+│ ├── auth.php
+│ ├── cache.php
+│ └── outros arquivos de configuração...
+├── database
+│ ├── migrations
+│ │ ├── 0001_01_01_000000_create_users_table.php
+│ │ ├── 2025_01_22_055258_create_favorites_table.php
+│ │ ├── 2025_01_22_073059_create_words_table.php
+│ │ └── outras migrations...
+├── public
+├── resources
+├── routes
+│ └── api.php
+├── storage
+├── tests
+├── .env
+└── words_dictionary.json
+
+---
+
+## ⚙️ Configuração do Ambiente e Docker
+
+### Configuração Inicial
+1. **Instalação do Laravel Sail (Docker)**
+./vendor/bin/sail up -d
+
+2. **Configuração do Banco de Dados e Cache (Redis)**
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+CACHE_DRIVER=redis
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+3. **Executar Migrations**
+./vendor/bin/sail artisan migrate
+
+4. **Importar Palavras do Dicionário**
+./vendor/bin/sail artisan import:words
+
+### Docker e DevOps
+
+O projeto utiliza Laravel Sail, fornecendo uma configuração Docker robusta e padronizada para desenvolvimento e deploy.
+
+#### Containers e Serviços
+- **Laravel**: Aplicação PHP
+- **MySQL**: Banco de dados relacional
+- **Redis**: Sistema de cache
+- **Mailpit**: Servidor de email para testes
+- **Selenium**: Testes automatizados
+- **Meilisearch**: Motor de busca
+
+#### Comandos Docker (Laravel Sail)
+Iniciar todos os containers Docker
+./vendor/bin/sail up -d
+Parar todos os containers
+./vendor/bin/sail down
+Executar comandos do Artisan
+./vendor/bin/sail artisan [comando]
+Executar comandos do Composer
+./vendor/bin/sail composer [comando]
+
+#### Benefícios para DevOps
+- Ambiente isolado e reproduzível
+- Configuração padronizada via docker-compose.yml
+- Fácil escalabilidade e manutenção
+- Documentação oficial extensa
+- Integração contínua simplificada
+
+---
+## 📚 Documentação OpenAPI 3.0
+
+A API possui documentação completa seguindo as especificações OpenAPI 3.0, permitindo uma visualização interativa de todos os endpoints e suas funcionalidades.
+
+### Acesso à Documentação
+- **Endpoint**: `/api-docs`
+- **Método**: GET
+- **Descrição**: Interface interativa com todos os endpoints, parâmetros e exemplos de requisições/respostas
+
+### Processo de Documentação
+1. Exportação da coleção do Insomnia (ferramenta de teste de API)
+2. Conversão para formato OpenAPI 3.0 usando insomnia-documenter
+3. Integração com o projeto Laravel na pasta `public/docs`
+
+### Recursos Documentados
+- Descrições detalhadas de todos os endpoints
+- Exemplos de requisições e respostas
+- Esquemas de autenticação
+- Modelos de dados
+- Códigos de status HTTP
+
+---
+
+## 🚀 Endpoints da API
+
+### 1. Rota Inicial: `[GET] /`
+Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
+
+**Exemplo de Resposta:**
+    {
     "message": "Fullstack Challenge 🏅 - Dictionary"
-}
-```
-</details>
-<details open>
-<summary>[POST] /auth/signup</summary>
+    }
 
-```json
-{
-    "name": "User 1",
-    "email": "example@email.com",
-    "password": "test"
-}
-```
+### 2. Autenticação
+- **[POST] /auth/signup**  
+  Registra um novo usuário.
 
-```json
-{
-    "id": "f3a10cec013ab2c1380acef",
-    "name": "User 1",
-    "token": "Bearer JWT.Token"
-}
-```
-</details>
-<details open>
-<summary>[POST] /auth/signin</summary>
+**Exemplo de Requisição:**
+    {
+    "name": "User Test",
+    "email": "test@example.com",
+    "password": "password123"
+    }
 
-```json
-{
-    "email": "example@email.com",
-    "password": "test"
-}
-```
+**Exemplo de Resposta:**
+    {
+    "id": 1,
+    "name": "User Test",
+    "token": "Bearer <seu_token_jwt>"
+    }
 
-```json
-{
-    "id": "f3a10cec013ab2c1380acef",
-    "name": "User 1",
-    "token": "Bearer JWT.Token"
-}
-```
-</details>
-<details open>
-<summary>[GET] /entries/en</summary>
-<p>
-Retornar a lista de palavras do dicionário, com paginação e suporte a busca. O endpoint de paginação de uma busca hipotética deve retornar a seguinte estrutura:
-<br/>
-[GET]/entries/en?search=fire&limit=4
-</p>
+- **[POST] /auth/signin**  
+Autentica um usuário e retorna um token JWT.
 
-```json
-{
-    "results": [
-        "fire",
-        "firefly",
-        "fireplace",
-        "fireman"
-    ],
-    "totalDocs": 20,
-    "page": 1,
-    "totalPages": 5, 
-    "hasNext": true,
-    "hasPrev": false
-}
-```
-</details>
-<details open>
-<summary>[GET] /entries/en/:word</summary>
-<p>
-Retornar as informações da palavra especificada e registra o histórico de acesso.
-</p>
-</details>
-<details open>
-<summary>[POST] /entries/en/:word/favorite</summary>
-<p>
-Salva a palavra na lista de favoritas (retorno de dados no body é opcional)
-</p> 
-</details>
-<details open>
-<summary>[DELETE] /entries/en/:word/unfavorite</summary>
-<p>
-Remover a palavra da lista de favoritas (retorno de dados no body é opcional)
-</p>
-</details> 
-<details open>
-<summary>[GET] /user/me</summary>
-<p>
-Retornar o perfil do usúario
-</p>
-</details> 
-<details open>
-<summary>[GET] /user/me/history</summary>
-<p>
-Retornar a lista de palavras visitadas
-</p>
+**Exemplo de Requisição:**
+    {
+    "email": "test@example.com",
+    "password": "password123"
+    }
 
-```json
-{
-    "results": [
-        {
-            "word": "fire",
-            "added": "2022-05-05T19:28:13.531Z"
-        },
-        {
-            "word": "firefly",
-            "added": "2022-05-05T19:28:44.021Z"
-        },
-        {
-            "word": "fireplace",
-            "added": "2022-05-05T19:29:28.631Z"
-        },
-        {
-            "word": "fireman",
-            "added": "2022-05-05T19:30:03.711Z"
-        }
-    ],
-    "totalDocs": 20,
-    "page": 2,
-    "totalPages": 5,
-    "hasNext": true,
-    "hasPrev": true
-}
-```
-</details> 
-<details open>
-<summary>[GET] /user/me/favorites</summary>
-<p>
-Retornar a lista de palavras marcadas como favoritas
-</p>
+**Exemplo de Resposta:**
+    {
+    "id": 1,
+    "name": "User Test",
+    "token": "Bearer <seu_token_jwt>"
+    }
 
-```json
-{
-    "results": [
-        {
-            "word": "fire",
-            "added": "2022-05-05T19:30:23.928Z"
-        },
-        {
-            "word": "firefly",
-            "added": "2022-05-05T19:30:24.088Z"
-        },
-        {
-            "word": "fireplace",
-            "added": "2022-05-05T19:30:28.963Z"
-        },
-        {
-            "word": "fireman",
-            "added": "2022-05-05T19:30:33.121Z"
-        }
-    ],
-    "totalDocs": 20,
-    "page": 2,
-    "totalPages": 5,
-    "hasNext": true,
-    "hasPrev": true
-}
-```
+### 3. Dicionário
+- **[GET] /entries/en**
+  - Lista palavras com busca e paginação.
 
-</details>
+- **[GET] /entries/en/:word**
+  - Retorna detalhes da palavra especificada e registra no histórico.
 
-Além disso, os endpoints devem utilizar os seguintes códigos de status:
-- 200: sucesso com body ou sem body
-- 204: sucesso sem body
-- 400: mensagem de erro em formato humanizado, ou seja, sem informações internas e códigos de erro:
+### 4. Favoritos
+- **[POST] /entries/en/:word/favorite**
+  - Adiciona uma palavra aos favoritos.
 
-```json
-{
-    "message": "Error message"
-}
-```
+- **[DELETE] /entries/en/:word/unfavorite**
+  - Remove uma palavra dos favoritos.
 
-**Obrigatório 3** - Você deve criar um script para baixar a lista de palavras do repositório e importar estas palavras para o banco de dados. A API não possui endpoint com a lista de palavras. Para criar seu endpoint será necessário alimentar o seu banco de dados com o [arquivo existente dentro do projeto no Github](https://github.com/dwyl/english-words/blob/master/words_dictionary.json). ok
+### 5. Usuário
+- **[GET] /user/me**
+  - Retorna o perfil do usuário autenticado.
 
-**Obrigatório 4** - Salvar em cache o resultado das requisições a API, para agilizar a resposta em caso de buscas com parâmetros repetidos. Sugestões são usar o Redis e/ou MongoDB; ok
+- **[GET] /user/me/history**
+  - Retorna o histórico de palavras visualizadas pelo usuário.
 
-O cache pode ser feito a guardar todo o corpo das respostas ou para guardar o resultado das queries do banco. Para identificar a presença de cache, será necessário adicionar os seguintes headers nas respostas:
-- x-cache: valores HIT (retornou dados em cache) ou MISS (precisou buscar no banco)
-- x-response-time: duração da requisição em milissegundos 
+- **[GET] /user/me/favorites**
+  - Retorna as palavras favoritas do usuário.
 
-**Diferencial 1** - Descrever a documentação da API utilizando o conceito de Open API 3.0;
+---
+## 📖 Processos de Investigação
 
-**Diferencial 2** - Escrever Unit Tests para os endpoints da API;
+Durante o desenvolvimento deste projeto, várias decisões foram tomadas:
 
-**Diferencial 3** - Configurar Docker no Projeto para facilitar o Deploy da equipe de DevOps;
+1. **Escolha do Redis**: Optou-se por usar o Redis devido à sua eficiência em caching, melhorando a performance das requisições repetidas.
+2. **Estrutura das Rotas**: As rotas foram estruturadas com base nos requisitos fornecidos, garantindo que cada funcionalidade fosse acessível através de endpoints RESTful.
+3. **Implementação do Cache**: O cache foi implementado nas rotas que realizam buscas frequentes, utilizando os headers `x-cache` e `x-response-time` para monitorar a eficácia do cache.
+4. **Apelido para o Redis**: O Redis foi apelidado como um sistema leve e rápido, ideal para armazenar dados temporários e otimizar a performance da aplicação.
 
-**Diferencial 4** - Deploy em algum servidor, com ou sem automatização do CI.
+---
 
-**Diferencial 5** - Implementar paginação com cursores ao inves de usar page e limit . Ao realizar este diferencial, o retorno dos endpoints deve possuir a seguinte estrutura:
+## 📋 Conclusão
 
-```json
-{
-    "results": [
-        "fire",
-        "firefly",
-        "fireplace",
-        "fireman"
-    ],
-    "totalDocs": 20,
-    "previous": "eyIkb2lkIjoiNTgwZmQxNmjJkOGI5In0",
-    "next": "eyIkb2lkIjoiNTgwZmQxNm1NjJkOGI4In0",
-    "hasNext": true,
-    "hasPrev": true,
-}
-```
+Este projeto atende aos requisitos solicitados no desafio, implementando uma API funcional com autenticação, gerenciamento de favoritos e histórico, além de otimizações através do uso de cache com Redis. Os diferenciais alcançados incluem:
+- Documentação OpenAPI 3.0 completa
+- Configuração Docker robusta através do Laravel Sail
+- Sistema de cache eficiente com Redis
 
-
-## Readme do Repositório
-
-- Deve conter o título do projeto
-- Uma descrição sobre o projeto em frase
-- Deve conter uma lista com linguagem, framework e/ou tecnologias usadas
-- Como instalar e usar o projeto (instruções)
-- Não esqueça o [.gitignore](https://www.toptal.com/developers/gitignore)
-- Se está usando github pessoal, referencie que é um challenge by coodesh:  
-
->  This is a challenge by [Coodesh](https://coodesh.com/)
-
-## Finalização e Instruções para a Apresentação
-
-1. Adicione o link do repositório com a sua solução no teste
-2. Adicione o link da apresentação do seu projeto no README.md.
-3. Verifique se o Readme está bom e faça o commit final em seu repositório;
-4. Envie e aguarde as instruções para seguir. Sucesso e boa sorte. =)
-
-## Suporte
-
-Use a [nossa comunidade](https://discord.gg/rdXbEvjsWu) para tirar dúvidas sobre o processo ou envie uma mensagem diretamente a um especialista no chat da plataforma. 
