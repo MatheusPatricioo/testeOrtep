@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: Dictionary API
+  description: API Restful para gerenciar palavras, favoritos e histórico de usuários.
+  version: 1.0.0
+servers:
+  - url: http://localhost
+paths:
+  /auth/signup:
+    post:
+      summary: Registrar novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  token:
+                    type: string
+
+  /auth/signin:
+    post:
+      summary: Autenticar usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Usuário autenticado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  token:
+                    type: string
+
+  /entries/en:
+    get:
+      summary: Listar palavras com suporte a busca e paginação.
+      parameters:
+        - in: query
+          name: search
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de palavras retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    word:
+                      type: string
+
+  /entries/en/{word}:
+    get:
+      summary: Retornar detalhes da palavra especificada.
+      parameters:
+        - in: path
+          name: word
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalhes da palavra retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  etymology:
+                    type: string
+                  synonyms:
+                    type: array
+                    items:
+                      type: string
+
+  /entries/en/{word}/favorite:
+    post:
+      summary: Adicionar uma palavra aos favoritos do usuário.
+      parameters:
+        - in: path
+          name: word
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Palavra adicionada aos favoritos com sucesso.
+
+  /entries/en/{word}/unfavorite:
+    delete:
+      summary: Remover uma palavra dos favoritos do usuário.
+      parameters:
+        - in: path
+          name: word
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Palavra removida dos favoritos com sucesso.
+
+  /user/me/history:
+    get:
+      summary: Retornar o histórico de palavras visualizadas pelo usuário.
+      responses:
+        '200':
+          description: Histórico de palavras retornado com sucesso.
+          content:
+            application/json:
+
+              schema:
+
+                type:
+
+                  array
+
+                items:
+
+                  type:
+
+                    object
+
+                  properties:
+
+                    word:
+
+                      type:
+
+                        string
+
+---
+

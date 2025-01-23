@@ -1,7 +1,6 @@
 # Fullstack Challenge - Dictionary API
 
-
-Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar palavras do dicionário, adicionar palavras aos favoritos e manter um histórico das palavras visualizadas. O projeto utiliza caching com Redis para melhorar a performance das requisições.
+Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar palavras do dicionário e gerenciar suas favoritas.
 
 ---
 
@@ -15,7 +14,6 @@ Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar 
 ---
 
 ## 📂 Estrutura do Projeto
-
 /api-ortep
 ├── app
 │ ├── Console
@@ -33,16 +31,21 @@ Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar 
 ├── config
 │ ├── auth.php
 │ ├── cache.php
+│ └── outros arquivos de configuração...
 ├── database
 │ ├── migrations
 │ │ ├── 0001_01_01_000000_create_users_table.php
 │ │ ├── 2025_01_22_055258_create_favorites_table.php
-│ │ └── 2025_01_22_073059_create_histories_table.php
+│ │ ├── 2025_01_22_073059_create_words_table.php
+│ │ └── outras migrations...
+├── public
+├── resources
 ├── routes
 │ └── api.php
+├── storage
+├── tests
 ├── .env
 └── words_dictionary.json
-
 
 ---
 
@@ -50,13 +53,10 @@ Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar 
 
 ### 1. Instalação do Laravel Sail (Docker)
 Para iniciar o projeto, você deve ter o Docker instalado. Utilize o Laravel Sail para configurar o ambiente:
-
 ./vendor/bin/sail up -d
-
 
 ### 2. Configuração do Banco de Dados e Cache (Redis)
 Certifique-se de que as variáveis no arquivo `.env` estão configuradas corretamente:
-
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -67,17 +67,12 @@ CACHE_DRIVER=redis
 REDIS_HOST=redis
 REDIS_PORT=6379
 
-
 ### 3. Executar Migrations
-
-php artisan migrate
-
+./vendor/bin/sail artisan migrate
 
 ### 4. Importar Palavras do Dicionário 
 Um comando Artisan foi criado para importar palavras do arquivo `words_dictionary.json`:
-
-php artisan import:words
-
+./vendor/bin/sail artisan import:words
 
 ---
 
@@ -91,7 +86,6 @@ Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
     "message": "Fullstack Challenge 🏅 - Dictionary"
     }
 
-
 ### 2. Autenticação:
 - **[POST] /auth/signup**  
   Registra um novo usuário.
@@ -102,7 +96,7 @@ Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
     "email": "test@example.com",
     "password": "password123"
     }
-    
+
 **Exemplo de Resposta:**
     {
     "id": 1,
@@ -110,24 +104,21 @@ Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
     "token": "Bearer <seu_token_jwt>"
     }
 
-
 - **[POST] /auth/signin**  
 Autentica um usuário e retorna um token JWT.
 
 **Exemplo de Requisição:**
-{
-"email": "test@example.com",
-"password": "password123"
-}
-
+    {
+    "email": "test@example.com",
+    "password": "password123"
+    }  
 
 **Exemplo de Resposta:**
-{
-"id": 1,
-"name": "User Test",
-"token": "Bearer <seu_token_jwt>"
-}
-
+    {
+    "id": 1,
+    "name": "User Test",
+    "token": "Bearer <seu_token_jwt>"
+    }
 
 ### 3. Dicionário:
 - **[GET] /entries/en**
@@ -169,3 +160,17 @@ Durante o desenvolvimento deste projeto, várias decisões foram tomadas:
 ## 📋 Conclusão
 
 Este projeto atende aos requisitos solicitados no desafio, implementando uma API funcional com autenticação, gerenciamento de favoritos e histórico, além de otimizações através do uso de cache com Redis.
+
+---
+
+## Finalização e Instruções para a Apresentação
+
+1. Adicione o link do repositório com a sua solução no teste.
+2. Adicione o link da apresentação do seu projeto no README.md.
+3. Verifique se o Readme está bom e faça o commit final em seu repositório;
+4. Envie e aguarde as instruções para seguir. Sucesso e boa sorte. =)
+
+> This is a challenge by [Coodesh](https://coodesh.com/)
+
+
+
