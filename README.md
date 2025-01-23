@@ -1,5 +1,7 @@
 # Fullstack Challenge - Dictionary API
 
+-- Link do video testando a API: https://drive.google.com/file/d/1oK65f8prkhOUI4hS05bKSljtS_3GEwyQ/view?usp=sharing
+
 Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar palavras do dicionário e gerenciar suas favoritas.
 
 ---
@@ -281,4 +283,4 @@ Este projeto atende aos requisitos solicitados no desafio, implementando uma API
 - Documentação OpenAPI 3.0 completa
 - Configuração Docker robusta através do Laravel Sail
 - Sistema de cache eficiente com Redis
-
+- Link do video testando a API: https://drive.google.com/file/d/1oK65f8prkhOUI4hS05bKSljtS_3GEwyQ/view?usp=sharing

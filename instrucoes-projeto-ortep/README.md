@@ -1,5 +1,7 @@
 # Back-end Challenge - Dictionary
 
+-- Link do video testando a API: https://drive.google.com/file/d/1oK65f8prkhOUI4hS05bKSljtS_3GEwyQ/view?usp=sharing
+
 ## Introdução
 
 Este é um teste para que possamos ver as suas habilidades como Back-end Developer.
@@ -274,6 +276,8 @@ O cache pode ser feito a guardar todo o corpo das respostas ou para guardar o re
 2. Adicione o link da apresentação do seu projeto no README.md.
 3. Verifique se o Readme está bom e faça o commit final em seu repositório;
 4. Envie e aguarde as instruções para seguir. Sucesso e boa sorte. =)
+
+-- Link do video testando a API: https://drive.google.com/file/d/1oK65f8prkhOUI4hS05bKSljtS_3GEwyQ/view?usp=sharing
 
 ## Suporte
 
