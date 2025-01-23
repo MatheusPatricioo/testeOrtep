@@ -4,15 +4,85 @@ Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar 
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🚀 Processo de Desenvolvimento
 
-- **Laravel**: Framework PHP para desenvolvimento da API.
-- **Redis**: Sistema de armazenamento em cache.
-- **JWT (JSON Web Tokens)**: Para autenticação de usuários.
-- **MySQL**: Banco de dados relacional.
+Como desenvolvedor júnior, segui uma abordagem estruturada para construir este projeto. Aqui está o passo a passo do desenvolvimento:
+
+### 1. Configuração Inicial
+Primeiro, configurei o ambiente base:
+- Instalei o Laravel 11 usando Composer
+- Configurei o Laravel Sail (Docker) para garantir um ambiente consistente
+- Defini as variáveis de ambiente no arquivo `.env`
+
+### 2. Banco de Dados
+Comecei pelo banco de dados pois é a fundação do projeto:
+- Criei as migrations para estruturar o banco:
+  - `users`: Para armazenar dados dos usuários
+  - `favorites`: Para guardar as palavras favoritas
+  - `histories`: Para registrar palavras visualizadas
+- Executei as migrations para criar as tabelas
+
+### 3. Autenticação
+Implementei a autenticação pois é necessária para outras funcionalidades:
+- Configurei o JWT para tokens de autenticação
+- Criei o AuthController para registro e login
+- Implementei as rotas de autenticação
+
+### 4. Importação do Dicionário
+Desenvolvi o sistema de importação de palavras:
+- Criei um comando Artisan personalizado (`ImportWords`)
+- Processei o arquivo `words_dictionary.json`
+- Importei as palavras para o banco de dados
+
+### 5. Cache com Redis
+Implementei o sistema de cache para otimizar a performance:
+- Configurei o Redis como driver de cache
+- Adicionei cache nas consultas frequentes
+- Implementei os headers obrigatórios (x-cache e x-response-time)
+
+### 6. Controllers e Rotas
+Desenvolvi os controllers principais:
+- `EntryController`: Para gerenciar palavras do dicionário
+- `UserController`: Para perfil e histórico do usuário
+- `FavoriteController`: Para gerenciar favoritos
+
+### 7. Testes e Validação
+Por fim, realizei testes para garantir a qualidade:
+- Testei todas as rotas no Insomnia
+- Verifiquei o funcionamento do cache
+- Validei a autenticação e autorização
+
+### Por que esta ordem?
+
+1. **Banco Primeiro**: Começar pelo banco de dados permite entender melhor a estrutura dos dados e relacionamentos
+2. **Autenticação**: É fundamental ter autenticação funcionando antes de implementar funcionalidades protegidas
+3. **Cache Depois**: Implementei cache após ter as funcionalidades básicas funcionando, para otimizar o que já estava pronto
+4. **Testes por Último**: Testar com tudo implementado permite uma validação mais completa
+
+### Desafios Encontrados
+
+- Configuração inicial do Docker/Sail( tive pouco contato com o Docker)
+- Implementação do sistema de cache com Redis (não conhecia o Redis)
+- Importação eficiente do dicionário
+- Gestão de tokens JWT
+
+### Aprendizados
+
+- Importância de um bom planejamento inicial
+- Benefícios de usar containers Docker
+- Como implementar cache eficientemente
+- Boas práticas de autenticação com JWT
 
 ---
 
+## 🛠️ Tecnologias Utilizadas
+
+- **Laravel**: Framework PHP para desenvolvimento da API
+- **Redis**: Sistema de armazenamento em cache
+- **JWT (JSON Web Tokens)**: Para autenticação de usuários
+- **MySQL**: Banco de dados relacional
+
+---
 ## 📂 Estrutura do Projeto
 /api-ortep
 ├── app
@@ -49,14 +119,13 @@ Uma API Restful que permite aos usuários registrar-se, fazer login, visualizar 
 
 ---
 
-## ⚙️ Configuração do Ambiente
+## ⚙️ Configuração do Ambiente e Docker
 
-### 1. Instalação do Laravel Sail (Docker)
-Para iniciar o projeto, você deve ter o Docker instalado. Utilize o Laravel Sail para configurar o ambiente:
+### Configuração Inicial
+1. **Instalação do Laravel Sail (Docker)**
 ./vendor/bin/sail up -d
 
-### 2. Configuração do Banco de Dados e Cache (Redis)
-Certifique-se de que as variáveis no arquivo `.env` estão configuradas corretamente:
+2. **Configuração do Banco de Dados e Cache (Redis)**
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -67,12 +136,62 @@ CACHE_DRIVER=redis
 REDIS_HOST=redis
 REDIS_PORT=6379
 
-### 3. Executar Migrations
+3. **Executar Migrations**
 ./vendor/bin/sail artisan migrate
 
-### 4. Importar Palavras do Dicionário 
-Um comando Artisan foi criado para importar palavras do arquivo `words_dictionary.json`:
+4. **Importar Palavras do Dicionário**
 ./vendor/bin/sail artisan import:words
+
+### Docker e DevOps
+
+O projeto utiliza Laravel Sail, fornecendo uma configuração Docker robusta e padronizada para desenvolvimento e deploy.
+
+#### Containers e Serviços
+- **Laravel**: Aplicação PHP
+- **MySQL**: Banco de dados relacional
+- **Redis**: Sistema de cache
+- **Mailpit**: Servidor de email para testes
+- **Selenium**: Testes automatizados
+- **Meilisearch**: Motor de busca
+
+#### Comandos Docker (Laravel Sail)
+Iniciar todos os containers Docker
+./vendor/bin/sail up -d
+Parar todos os containers
+./vendor/bin/sail down
+Executar comandos do Artisan
+./vendor/bin/sail artisan [comando]
+Executar comandos do Composer
+./vendor/bin/sail composer [comando]
+
+#### Benefícios para DevOps
+- Ambiente isolado e reproduzível
+- Configuração padronizada via docker-compose.yml
+- Fácil escalabilidade e manutenção
+- Documentação oficial extensa
+- Integração contínua simplificada
+
+---
+## 📚 Documentação OpenAPI 3.0
+
+A API possui documentação completa seguindo as especificações OpenAPI 3.0, permitindo uma visualização interativa de todos os endpoints e suas funcionalidades.
+
+### Acesso à Documentação
+- **Endpoint**: `/api-docs`
+- **Método**: GET
+- **Descrição**: Interface interativa com todos os endpoints, parâmetros e exemplos de requisições/respostas
+
+### Processo de Documentação
+1. Exportação da coleção do Insomnia (ferramenta de teste de API)
+2. Conversão para formato OpenAPI 3.0 usando insomnia-documenter
+3. Integração com o projeto Laravel na pasta `public/docs`
+
+### Recursos Documentados
+- Descrições detalhadas de todos os endpoints
+- Exemplos de requisições e respostas
+- Esquemas de autenticação
+- Modelos de dados
+- Códigos de status HTTP
 
 ---
 
@@ -86,11 +205,11 @@ Retorna a mensagem "Fullstack Challenge 🏅 - Dictionary".
     "message": "Fullstack Challenge 🏅 - Dictionary"
     }
 
-### 2. Autenticação:
+### 2. Autenticação
 - **[POST] /auth/signup**  
   Registra um novo usuário.
 
-  **Exemplo de Requisição:**
+**Exemplo de Requisição:**
     {
     "name": "User Test",
     "email": "test@example.com",
@@ -111,7 +230,7 @@ Autentica um usuário e retorna um token JWT.
     {
     "email": "test@example.com",
     "password": "password123"
-    }  
+    }
 
 **Exemplo de Resposta:**
     {
@@ -120,32 +239,31 @@ Autentica um usuário e retorna um token JWT.
     "token": "Bearer <seu_token_jwt>"
     }
 
-### 3. Dicionário:
+### 3. Dicionário
 - **[GET] /entries/en**
-- Lista palavras com busca e paginação.
+  - Lista palavras com busca e paginação.
 
 - **[GET] /entries/en/:word**
-- Retorna detalhes da palavra especificada e registra no histórico.
+  - Retorna detalhes da palavra especificada e registra no histórico.
 
-### 4. Favoritos:
+### 4. Favoritos
 - **[POST] /entries/en/:word/favorite**
-- Adiciona uma palavra aos favoritos.
+  - Adiciona uma palavra aos favoritos.
 
 - **[DELETE] /entries/en/:word/unfavorite**
-- Remove uma palavra dos favoritos.
+  - Remove uma palavra dos favoritos.
 
-### 5. Usuário:
+### 5. Usuário
 - **[GET] /user/me**
-- Retorna o perfil do usuário autenticado.
+  - Retorna o perfil do usuário autenticado.
 
 - **[GET] /user/me/history**
-- Retorna o histórico de palavras visualizadas pelo usuário.
+  - Retorna o histórico de palavras visualizadas pelo usuário.
 
 - **[GET] /user/me/favorites**
-- Retorna as palavras favoritas do usuário.
+  - Retorna as palavras favoritas do usuário.
 
 ---
-
 ## 📖 Processos de Investigação
 
 Durante o desenvolvimento deste projeto, várias decisões foram tomadas:
@@ -159,18 +277,8 @@ Durante o desenvolvimento deste projeto, várias decisões foram tomadas:
 
 ## 📋 Conclusão
 
-Este projeto atende aos requisitos solicitados no desafio, implementando uma API funcional com autenticação, gerenciamento de favoritos e histórico, além de otimizações através do uso de cache com Redis.
-
----
-
-## Finalização e Instruções para a Apresentação
-
-1. Adicione o link do repositório com a sua solução no teste.
-2. Adicione o link da apresentação do seu projeto no README.md.
-3. Verifique se o Readme está bom e faça o commit final em seu repositório;
-4. Envie e aguarde as instruções para seguir. Sucesso e boa sorte. =)
-
-> This is a challenge by [Coodesh](https://coodesh.com/)
-
-
+Este projeto atende aos requisitos solicitados no desafio, implementando uma API funcional com autenticação, gerenciamento de favoritos e histórico, além de otimizações através do uso de cache com Redis. Os diferenciais alcançados incluem:
+- Documentação OpenAPI 3.0 completa
+- Configuração Docker robusta através do Laravel Sail
+- Sistema de cache eficiente com Redis
 

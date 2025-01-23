@@ -6,23 +6,23 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // Retornar o perfil do usuário autenticado
+    // Mostra os dados do usuário logado
     public function me()
     {
         return response()->json(auth()->user());
     }
 
-    // Listar o histórico de palavras visualizadas pelo usuário
+    // Mostra o histórico de palavras que o usuário já viu
     public function history(Request $request)
     {
-        $limit = $request->input('limit', 10); // Número de itens por página (padrão: 10)
+        $limit = $request->input('limit', 10); // Quantos itens mostrar por página
 
-        // Buscar histórico do usuário autenticado com paginação
+        // Pega o histórico ordenado do mais recente pro mais antigo
         $history = auth()->user()->history()
             ->orderBy('viewed_at', 'desc')
             ->paginate($limit);
 
-        // Formatação da resposta
+        // Organiza os dados pra retornar certinho
         return response()->json([
             'results' => collect($history->items())->map(function ($item) {
                 return [
@@ -38,17 +38,17 @@ class UserController extends Controller
         ]);
     }
 
-    // Listar palavras favoritas do usuário
+    // Mostra as palavras favoritas do usuário
     public function favorites(Request $request)
     {
-        $limit = $request->input('limit', 10); // Número de itens por página (padrão: 10)
+        $limit = $request->input('limit', 10); // Quantos favoritos mostrar por página
 
-        // Buscar favoritos do usuário autenticado com paginação
+        // Pega os favoritos, mais recentes primeiro
         $favorites = auth()->user()->favorites()
             ->orderBy('created_at', 'desc')
             ->paginate($limit);
 
-        // Formatação da resposta
+        // Organiza do mesmo jeito que o histórico pra manter um padrão
         return response()->json([
             'results' => collect($favorites->items())->map(function ($item) {
                 return [

@@ -3,45 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Importação da classe DB
-use Illuminate\Support\Facades\Cache; // Importação da classe Cache
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 use App\Models\Favorite;
 
 class EntryController extends Controller
 {
-    // Método para listar palavras (exemplo com busca e paginação)
+    // Lista as palavras e permite buscar por uma específica
     public function index(Request $request)
     {
         $query = $request->input('search');
         $limit = $request->input('limit', 10);
 
-        // Gerar uma chave única para identificar os dados no cache
+        // Cria uma chave única pro cache
         $cacheKey = "entries_en_" . md5("search={$query}&limit={$limit}");
-
-        // Medir o tempo de execução da requisição
         $startTime = microtime(true);
 
-        // Verificar se os dados estão no cache
+        // Tenta pegar do cache primeiro
         $cachedData = Cache::get($cacheKey);
 
         if ($cachedData) {
-            // Dados encontrados no cache (HIT)
             $responseTime = round((microtime(true) - $startTime) * 1000, 2);
             return response()->json($cachedData)
                 ->header('x-cache', 'HIT')
                 ->header('x-response-time', "{$responseTime}ms");
         }
 
-        // Caso não esteja no cache, buscar no banco de dados (MISS)
+        // Se não achou no cache, busca no banco
         $words = DB::table('words')
             ->when($query, function ($queryBuilder) use ($query) {
                 return $queryBuilder->where('word', 'like', "%$query%");
             })
             ->paginate($limit);
 
+        // Organiza os dados pra retornar
         $responseData = [
-            'results' => collect($words->items())->pluck('word'), // Apenas as palavras
+            'results' => collect($words->items())->pluck('word'),
             'totalDocs' => $words->total(),
             'page' => $words->currentPage(),
             'totalPages' => $words->lastPage(),
@@ -49,28 +47,27 @@ class EntryController extends Controller
             'hasPrev' => $words->currentPage() > 1,
         ];
 
-        // Salvar os dados no cache por 10 minutos
+        // Guarda no cache pra próxima vez
         Cache::put($cacheKey, $responseData, now()->addMinutes(10));
 
-        // Retornar os dados com os headers apropriados
         $responseTime = round((microtime(true) - $startTime) * 1000, 2);
         return response()->json($responseData)
             ->header('x-cache', 'MISS')
             ->header('x-response-time', "{$responseTime}ms");
     }
 
-    // Método para buscar detalhes de uma palavra na API externa
+    // Busca os detalhes de uma palavra específica
     public function show($word)
     {
         $client = new Client();
 
         try {
-            // Fazendo a requisição para a API externa
+            // Busca na API do dicionário
             $response = $client->get("https://api.dictionaryapi.dev/api/v2/entries/en/{$word}");
             $data = json_decode($response->getBody(), true);
 
-            // Salvar no histórico do usuário autenticado
-            if (auth('api')->check()) { // Verifica se o usuário está autenticado com o guard 'api'
+            // Se o usuário tiver logado, salva no histórico dele
+            if (auth('api')->check()) {
                 auth('api')->user()->history()->create([
                     'word' => $word,
                     'viewed_at' => now(),
@@ -83,7 +80,7 @@ class EntryController extends Controller
         }
     }
 
-    // Método para adicionar uma palavra aos favoritos
+    // Adiciona uma palavra aos favoritos do usuário
     public function favorite($word)
     {
         Favorite::create([
@@ -94,6 +91,7 @@ class EntryController extends Controller
         return response()->json(['message' => 'Word added to favorites'], 201);
     }
     
+    // Remove uma palavra dos favoritos
     public function unfavorite($word)
     {
         Favorite::where('user_id', auth('api')->id())
